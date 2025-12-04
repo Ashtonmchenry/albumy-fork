@@ -18,6 +18,7 @@ from albumy.forms.main import DescriptionForm, TagForm, CommentForm
 from albumy.models import User, Photo, Tag, Follow, Collect, Comment, Notification
 from albumy.notifications import push_comment_notification, push_collect_notification
 from albumy.utils import rename_image, resize_image, redirect_back, flash_errors
+from albumy.ml_vision import generate_caption_and_tags  # ← NEW
 
 main_bp = Blueprint('main', __name__)
 
@@ -122,9 +123,14 @@ def upload():
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
         filename = rename_image(f.filename)
-        f.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename))
+        upload_dir = current_app.config['ALBUMY_UPLOAD_PATH']
+        image_path = os.path.join(upload_dir, filename)
+
+        # Save original
+        f.save(image_path)
         filename_s = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['small'])
         filename_m = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['medium'])
+
         photo = Photo(
             filename=filename,
             filename_s=filename_s,
@@ -132,6 +138,27 @@ def upload():
             author=current_user._get_current_object()
         )
         db.session.add(photo)
+        db.session.flush()  # get photo.id without committing yet
+
+        # --- ML integration: alt text + object tags ---
+        try:
+            alt_text, labels = generate_caption_and_tags(image_path)
+        except Exception:
+            alt_text, labels = None, []
+
+        # 1) Auto-generate alt text if user hasn't provided description
+        if alt_text and not photo.description:
+            photo.description = alt_text
+
+        # 2) Turn detected objects into Tag rows
+        for name in labels:
+            tag = Tag.query.filter_by(name=name).first()
+            if tag is None:
+                tag = Tag(name=name)
+                db.session.add(tag)
+            if tag not in photo.tags:
+                photo.tags.append(tag)
+        # --- end ML integration ---
         db.session.commit()
     return render_template('main/upload.html')
 

@@ -68,6 +68,8 @@ class BaseConfig:
 
     WHOOSHEE_MIN_STRING_LEN = 1
 
+    VISION_ENDPOINT = os.getenv('VISION_ENDPOINT')  # from .flaskenv / environment
+    VISION_KEY = os.getenv('VISION_KEY')
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = \
