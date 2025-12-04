@@ -113,4 +113,3 @@ uploads/avatars/*
 !uploads/avatars/.gitkeep
 
 whooshee
-.flaskenv
