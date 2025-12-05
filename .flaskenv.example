@@ -1,5 +1,6 @@
 FLASK_APP=albumy
 FLASK_ENV=development
 
+SECRET_KEY="something-random"
 VISION_ENDPOINT="https://<your-vision-resource>.cognitiveservices.azure.com"
 VISION_KEY="your-actual-subscription-key"
