@@ -22,19 +22,23 @@ git clone https://github.com/Ashtonmchenry/albumy-fork.git
 cd albumy-fork
 ```
 
- ### 1.2. Create a virtual environment & install dependencies (must use python 3.8)
+ ### 1.2. Create a virtual environment & install dependencies (might require python 3.8)
 
 ```bash
 python -m venv .venv
 # use a python 3.8 .venv incase you run into an
 # error while installing requirements
 py -3.8 -m venv .venv 
-
+```
+Activate environment:
+```bash
 # Windows PowerShell
-.\.venv\Scripts\Activate.ps1
+.venv/Scripts/Activate
 # macOS / Linux
 source .venv/bin/activate
-
+```
+Install requirements:
+```bash
 pip install -r requirements.txt
 ```
 
@@ -42,21 +46,8 @@ pip install -r requirements.txt
 
 Rename `.flaskenv.example` to `.flaskenv`.
 
-```bash
-FLASK_APP=albumy
-FLASK_ENV=development
-
-# Flask secret key (any random string, do NOT commit real value)
-SECRET_KEY="change-me"
-
-# Azure Computer Vision credentials
-VISION_ENDPOINT="https://<your-vision-resource>.cognitiveservices.azure.com"
-VISION_KEY="<your-vision-key>"
-```
-
 ### 1.4. Initialize the database and fake data
 ```bash
-# Create tables and generate demo data (users, photos, tags, etc.)
 flask forge
 ```
 then run:
@@ -66,8 +57,34 @@ flask run
 # -> Serving on http://127.0.0.1:5000/
 ```
 
-Log in with one of the forged accounts or sign up as a new user.
-(If you sign up, you can mark your account as confirmed in the DB using the Flask shell.)
+### 1.5 Create an account
+
+### 1.6 Confirm your email in the database using flask shell
+In another terminal (with `.venv` activated), open python prompt:
+```bash
+flask shell
+```
+Then run:
+```bash
+from albumy.models import User
+from albumy.extensions import db
+```
+
+Use the email you registered with and run:
+```bash
+u = User.query.filter_by(email='YOUR_EMAIL_HERE')
+u # Must return an object
+```
+If an object is successfully returned, confirm email:
+```bash
+u.confirmed = True
+db.session.commit()
+```
+
+Now exit:
+```bash
+exit()
+```
 
 ## 2. Computer Vision API Setup (Azure)
 
@@ -86,18 +103,12 @@ If `VISION_ENDPOINT` or `VISION_KEY` are missing, the app will still run, but th
 
 ## 3. Example Usage
 
-1. Start the app:
-```bash
-flask run
-# http://127.0.0.1:5000/
-```
-2. Log in (or sign up and confirm your account in the DB).
-3. Click Upload and upload a new image (dog, car, etc.).
-4. After upload, navigate to that photo’s detail page:
+1. Click Upload and upload a new image (dog, car, etc.).
+2. After upload, navigate to that photo’s detail page:
   - The description under the image should already be filled with a generated caption.
   - Inspect the image element in the browser; its `<img>` tag has `alt="generated caption"`.
   - Below the image, you should see auto-created tags (e.g. `dog`, `car`, `outdoor`).
-5. Use the search bar:
+3. Use the search bar:
   - Type one of the object words (e.g. `dog`) and submit the search.
   - On the results page, click the Tag tab.
   - The photo you just uploaded appears under that tag, even though you never manually added that keyword.
