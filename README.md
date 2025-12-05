@@ -25,7 +25,10 @@ cd albumy-fork
  ### 1.2. Create a virtual environment & install dependencies (must use python 3.8)
 
 ```bash
-py -3.8 -m venv .venv
+python -m venv .venv
+# use a python 3.8 .venv incase you run into an
+error while installing requirements
+py -3.8 -m venv .venv 
 
 # Windows PowerShell
 .\.venv\Scripts\Activate.ps1
