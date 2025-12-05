@@ -25,6 +25,7 @@ git clone https://github.com/Ashtonmchenry/albumy-fork.git
 
 ```bash
 python -m venv .venv
+
 # Windows PowerShell
 .\.venv\Scripts\Activate.ps1
 # macOS / Linux
@@ -34,6 +35,8 @@ pip install -r requirements.txt
 ```
 
 ### 1.3. Environment configuration (.flaskenv)
+
+Rename `.flaskenv.example` to `.flaskenv`.
 
 ```bash
 FLASK_APP=albumy
