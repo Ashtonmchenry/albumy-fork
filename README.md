@@ -27,7 +27,7 @@ cd albumy-fork
 ```bash
 python -m venv .venv
 # use a python 3.8 .venv incase you run into an
-error while installing requirements
+# error while installing requirements
 py -3.8 -m venv .venv 
 
 # Windows PowerShell
