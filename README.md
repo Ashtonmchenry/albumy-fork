@@ -22,10 +22,10 @@ git clone https://github.com/Ashtonmchenry/albumy-fork.git
 cd albumy-fork
 ```
 
- ### 1.2. Create a virtual environment & install dependencies
+ ### 1.2. Create a virtual environment & install dependencies (must use python 3.8)
 
 ```bash
-python -m venv .venv
+py -3.8 -m venv .venv
 
 # Windows PowerShell
 .\.venv\Scripts\Activate.ps1
