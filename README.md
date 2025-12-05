@@ -19,6 +19,7 @@ Demo of the original project: http://albumy.helloflask.com
 
 ```bash
 git clone https://github.com/Ashtonmchenry/albumy-fork.git
+cd albumy-fork
 ```
 
  ### 1.2. Create a virtual environment & install dependencies
